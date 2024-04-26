@@ -94,6 +94,18 @@
       font-weight: bold;
       cursor: pointer;
       margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .sound-button.active {
+      background-color: green;
+      color: white;
+    }
+
+    .sound-button.inactive {
+      background-color: red;
+      color: white;
     }
 
     footer {
@@ -119,7 +131,7 @@
   <div id="game-iframe-container" class="fullscreen" style="display: none;">
     <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
     <button onclick="closeGame()">Fermer</button>
-    <button class="sound-button" onclick="toggleSound()">Activer/Désactiver le son</button>
+    <button class="sound-button" onclick="toggleSound()">Désactiver le son</button>
   </div>
 
   <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
@@ -187,9 +199,13 @@
         if (isSoundEnabled) {
           audioElement.muted = true;
           document.querySelector(".sound-button").textContent = "Activer le son";
+          document.querySelector(".sound-button").classList.remove("active");
+          document.querySelector(".sound-button").classList.add("inactive");
         } else {
           audioElement.muted = false;
           document.querySelector(".sound-button").textContent = "Désactiver le son";
+          document.querySelector(".sound-button").classList.remove("inactive");
+          document.querySelector(".sound-button").classList.add("active");
         }
         isSoundEnabled = !isSoundEnabled;
       }
