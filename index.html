@@ -88,11 +88,19 @@
       cursor: pointer;
       margin-left: 10px;
     }
+
+    .sound-button {
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
     footer {
-      backround-color : #DBDBDA;
-      color : #FFFFFF,
+      background-color : #DBDBDA;
+      color : #FFFFFF;
       margin-bottom:0px;
-      align-text : center ; 
+      text-align : center; 
     }
   </style>
 </head>
@@ -109,18 +117,21 @@
   </div>
 
   <div id="game-iframe-container" class="fullscreen" style="display: none;">
-    <iframe id="game-iframe" class="game-iframe"></iframe>
+    <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
     <button onclick="closeGame()">Fermer</button>
+    <button class="sound-button" onclick="toggleSound()">Activer/Désactiver le son</button>
   </div>
-<footer>Copyright © 2024 - All Rights Reserved
 
-Site par Stincof NDS & Fern</footer>
+  <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
+
   <script>
     const gameData = [
       { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/" },
       { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/" },
       { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" }
     ];
+
+    let isSoundEnabled = true;
 
     function addGame(gameData) {
       const gameCard = document.createElement("div");
@@ -135,11 +146,13 @@ Site par Stincof NDS & Fern</footer>
     function openGame(gameUrl, gameTitle) {
       document.getElementById("game-iframe").src = gameUrl;
       document.getElementById("game-iframe-container").style.display = "block";
+      toggleSound();
     }
 
     function closeGame() {
       document.getElementById("game-iframe-container").style.display = "none";
       document.getElementById("game-iframe").src = "";
+      toggleSound();
     }
 
     function searchGames() {
@@ -166,6 +179,20 @@ Site par Stincof NDS & Fern</footer>
     function clearSearch() {
       document.querySelector(".search-input").value = "";
       document.getElementById("search-results").style.display = "none";
+    }
+
+    function toggleSound() {
+      const audioElement = document.getElementById("game-iframe").contentWindow.document.querySelector("audio");
+      if (audioElement) {
+        if (isSoundEnabled) {
+          audioElement.muted = true;
+          document.querySelector(".sound-button").textContent = "Activer le son";
+        } else {
+          audioElement.muted = false;
+          document.querySelector(".sound-button").textContent = "Désactiver le son";
+        }
+        isSoundEnabled = !isSoundEnabled;
+      }
     }
 
     // Chargement des jeux
