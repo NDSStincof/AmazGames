@@ -15,7 +15,7 @@
     }
 
     .game-card {
-      width: 200px;
+      width: 280px;
       text-align: center;
       cursor: pointer;
       border : 10px solid #000000;
@@ -52,6 +52,7 @@
       display: flex;
       justify-content: center;
       margin-top: 20px;
+      margin-left : 250px;
     }
 
     .search-input {
@@ -62,6 +63,7 @@
       font-size: 16px;
       background-color : #DBDBDA;
       color : #000000;
+      text-align : center ;
     }
 
     .search-results {
@@ -101,12 +103,13 @@
       color : #FFFFFF;
       margin-bottom:0px;
       text-align : center; 
+      height : 100px;
     }
   </style>
 </head>
 <body>
 
-  <div class="search-container">
+<div class="search-container">
     <input type="text" class="search-input" placeholder="Rechercher un jeu" onkeyup="searchGames()">
 
     <span class="sound-warning"><br><br><br>ATTENTION LE SON EST ACTIF ! </span>
@@ -115,21 +118,27 @@
   </div>
 
   <div class="game-container" id="game-container">
-    <!-- Les jeux seront ajoutés dynamiquement ici -->
+    <!-- Les jeux seront ajouté ici -->
   </div>
 
   <div id="game-iframe-container" class="fullscreen" style="display: none;">
     <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
     <button onclick="closeGame()">Fermer</button>
   </div>
-
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
 
   <script>
     const gameData = [
       { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/" },
       { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/" },
-      { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" }
+      { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" },
+      {title : "Run3",image: "run3.png",url : "https://incrediblewebsite.github.io/run3/"},
+      {title : "Choppy Orc",image: "choppyorc.png",url:"https://incrediblewebsite.github.io/choppyorc/"},
+      {title:"Factory Balls",image:"factoryballs.png",url : "https://incrediblewebsite.github.io/factoryballs/"},
+      {title:"CircloO2",image:"circloo2.png",url:"https://incrediblewebsite.github.io/circloo2/"},
+      {title : "IceDodo",img : "icedodo.png",url : "https://incrediblewebsite.github.io/icedodo/"},
+      {title:"Tunnel Glider",img:"tunnelglider.png",url:"https://incrediblewebsite.github.io/tunnelglider/"}
     ];
 
     function addGame(gameData) {
