@@ -60,7 +60,8 @@
       border-radius: 10px;
       width: 300px;
       font-size: 16px;
-      color : #DBDBDA;
+      background-color : #DBDBDA;
+      color : #000000;
     }
 
     .search-results {
@@ -89,23 +90,10 @@
       margin-left: 10px;
     }
 
-    .sound-button {
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
+    .sound-warning {
+      font-size: 14px;
+      color: red;
       margin-left: 10px;
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-
-    .sound-button.active {
-      background-color: green;
-      color: white;
-    }
-
-    .sound-button.inactive {
-      background-color: red;
-      color: white;
     }
 
     footer {
@@ -120,8 +108,9 @@
 
   <div class="search-container">
     <input type="text" class="search-input" placeholder="Rechercher un jeu" onkeyup="searchGames()">
+
+    <span class="sound-warning"><br><br><br>ATTENTION LE SON EST ACTIF ! </span>
     <span class="close-button" onclick="clearSearch()">X</span>
-    <button class="sound-button" onclick="toggleSound()">Désactiver le son</button>
     <div class="search-results" id="search-results"></div>
   </div>
 
@@ -143,8 +132,6 @@
       { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" }
     ];
 
-    let isSoundEnabled = true;
-
     function addGame(gameData) {
       const gameCard = document.createElement("div");
       gameCard.classList.add("game-card");
@@ -158,13 +145,11 @@
     function openGame(gameUrl, gameTitle) {
       document.getElementById("game-iframe").src = gameUrl;
       document.getElementById("game-iframe-container").style.display = "block";
-      toggleSound();
     }
 
     function closeGame() {
       document.getElementById("game-iframe-container").style.display = "none";
       document.getElementById("game-iframe").src = "";
-      toggleSound();
     }
 
     function searchGames() {
@@ -191,26 +176,6 @@
     function clearSearch() {
       document.querySelector(".search-input").value = "";
       document.getElementById("search-results").style.display = "none";
-    }
-
-    function toggleSound() {
-      const audioElements = document.querySelectorAll("iframe").forEach((iframe) => {
-        const audioElement = iframe.contentWindow.document.querySelector("audio");
-        if (audioElement) {
-          if (isSoundEnabled) {
-            audioElement.muted = true;
-            document.querySelector(".sound-button").textContent = "Activer le son";
-            document.querySelector(".sound-button").classList.remove("active");
-            document.querySelector(".sound-button").classList.add("inactive");
-          } else {
-            audioElement.muted = false;
-            document.querySelector(".sound-button").textContent = "Désactiver le son";
-            document.querySelector(".sound-button").classList.remove("inactive");
-            document.querySelector(".sound-button").classList.add("active");
-          }
-          isSoundEnabled = !isSoundEnabled;
-        }
-      });
     }
 
     // Chargement des jeux
