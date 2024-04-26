@@ -121,6 +121,7 @@
   <div class="search-container">
     <input type="text" class="search-input" placeholder="Rechercher un jeu" onkeyup="searchGames()">
     <span class="close-button" onclick="clearSearch()">X</span>
+    <button class="sound-button" onclick="toggleSound()">Désactiver le son</button>
     <div class="search-results" id="search-results"></div>
   </div>
 
@@ -131,7 +132,6 @@
   <div id="game-iframe-container" class="fullscreen" style="display: none;">
     <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
     <button onclick="closeGame()">Fermer</button>
-    <button class="sound-button" onclick="toggleSound()">Désactiver le son</button>
   </div>
 
   <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
@@ -194,21 +194,23 @@
     }
 
     function toggleSound() {
-      const audioElement = document.getElementById("game-iframe").contentWindow.document.querySelector("audio");
-      if (audioElement) {
-        if (isSoundEnabled) {
-          audioElement.muted = true;
-          document.querySelector(".sound-button").textContent = "Activer le son";
-          document.querySelector(".sound-button").classList.remove("active");
-          document.querySelector(".sound-button").classList.add("inactive");
-        } else {
-          audioElement.muted = false;
-          document.querySelector(".sound-button").textContent = "Désactiver le son";
-          document.querySelector(".sound-button").classList.remove("inactive");
-          document.querySelector(".sound-button").classList.add("active");
+      const audioElements = document.querySelectorAll("iframe").forEach((iframe) => {
+        const audioElement = iframe.contentWindow.document.querySelector("audio");
+        if (audioElement) {
+          if (isSoundEnabled) {
+            audioElement.muted = true;
+            document.querySelector(".sound-button").textContent = "Activer le son";
+            document.querySelector(".sound-button").classList.remove("active");
+            document.querySelector(".sound-button").classList.add("inactive");
+          } else {
+            audioElement.muted = false;
+            document.querySelector(".sound-button").textContent = "Désactiver le son";
+            document.querySelector(".sound-button").classList.remove("inactive");
+            document.querySelector(".sound-button").classList.add("active");
+          }
+          isSoundEnabled = !isSoundEnabled;
         }
-        isSoundEnabled = !isSoundEnabled;
-      }
+      });
     }
 
     // Chargement des jeux
