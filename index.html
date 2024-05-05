@@ -18,8 +18,8 @@
       width: 280px;
       text-align: center;
       cursor: pointer;
-      border : 10px solid #000000;
-      border-radius : 10px;
+      border: 10px solid #000000;
+      border-radius: 10px;
     }
 
     .game-card img {
@@ -28,14 +28,14 @@
     }
 
     .game-iframe {
-      width : 800px;
+      width: 800px;
       height: 500px;
       border: none;
-      margin-top : 50px;
+      margin-top: 50px;
       margin-left: 50px;
       margin-right: 50px;
-      border : 10px solid #000000;
-      border-radius: 10px ;
+      border: 10px solid #000000;
+      border-radius: 10px;
     }
 
     .fullscreen {
@@ -52,7 +52,7 @@
       display: flex;
       justify-content: center;
       margin-top: 20px;
-      margin-left : 250px;
+      margin-left: 250px;
     }
 
     .search-input {
@@ -61,9 +61,9 @@
       border-radius: 10px;
       width: 300px;
       font-size: 16px;
-      background-color : #DBDBDA;
-      color : #000000;
-      text-align : center ;
+      background-color: #DBDBDA;
+      color: #000000;
+      text-align: center;
     }
 
     .search-results {
@@ -99,98 +99,146 @@
     }
 
     footer {
-      background-color : #DBDBDA;
-      color : #FFFFFF;
-      margin-bottom:0px;
-      text-align : center; 
-      height : 100px;
+      background-color: #DBDBDA;
+      color: #FFFFFF;
+      margin-bottom: 0px;
+      text-align: center;
+      height: 100px;
+    }
+
+    .like-button,
+    .favorite-button {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+
+    .like-count,
+    .favorite-count {
+      font-size: 14px;
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
 
 <div class="search-container">
-    <input type="text" class="search-input" placeholder="Rechercher un jeu" onkeyup="searchGames()">
+  <input type="text" class="search-input" placeholder="Rechercher un jeu" onkeyup="searchGames()">
 
-    <span class="sound-warning"><br><br><br>ATTENTION LE SON EST ACTIF ! </span>
-    <span class="close-button" onclick="clearSearch()">X</span>
-    <div class="search-results" id="search-results"></div>
-  </div>
+  <span class="sound-warning"><br><br><br>ATTENTION LE SON EST ACTIF !</span>
+  <span class="close-button" onclick="clearSearch()">X</span>
+  <div class="search-results" id="search-results"></div>
+</div>
 
-  <div class="game-container" id="game-container">
-    <!-- Les jeux seront ajouté ici -->
-  </div>
+<div class="game-container" id="game-container">
+  <!-- Les jeux seront ajoutés ici -->
+</div>
 
-  <div id="game-iframe-container" class="fullscreen" style="display: none;">
-    <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
-    <button onclick="closeGame()">Fermer</button>
-  </div>
+<div id="game-iframe-container" class="fullscreen" style="display: none;">
+  <iframe id="game-iframe" class="game-iframe" allow="autoplay"></iframe>
+  <button onclick="closeGame()">Fermer</button>
+</div>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
+<footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
 
-  <script>
-    const gameData = [
-      { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/" },
-      { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/" },
-      { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" },
-      {title : "Run3",image: "run3.png",url : "https://incrediblewebsite.github.io/run3/"},
-      {title : "Choppy Orc",image: "choppyorc.png",url:"https://incrediblewebsite.github.io/choppyorc/"},
-      {title:"Factory Balls",image:"factoryballs.png",url : "https://incrediblewebsite.github.io/factoryballs/"},
-      {title:"CircloO2",image:"circloo2.png",url:"https://incrediblewebsite.github.io/circloo2/"},
-      {title : "IceDodo",img : "icedodo.png",url : "https://incrediblewebsite.github.io/icedodo/"},
-      {title:"Tunnel Glider",img:"tunnelglider.png",url:"https://incrediblewebsite.github.io/tunnelglider/"}
-    ];
+<script>
+  const gameData = [
+    { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/", likes: 0, isFavorite: false },
+    { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/", likes: 0, isFavorite: false },
+    { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/", likes: 0, isFavorite: false },
+    { title: "Run3", image: "run3.png", url: "https://incrediblewebsite.github.io/run3/", likes: 0, isFavorite: false },
+    { title: "Choppy Orc", image: "choppyorc.png", url: "https://incrediblewebsite.github.io/choppyorc/", likes: 0, isFavorite: false },
+    { title: "Factory Balls", image: "factoryballs.png", url: "https://incrediblewebsite.github.io/factoryballs/", likes: 0, isFavorite: false },
+    { title: "CircloO2", image: "circloo2.png", url: "https://incrediblewebsite.github.io/circloo2/", likes: 0, isFavorite: false },
+    { title: "IceDodo", img: "icedodo.png", url: "https://incrediblewebsite.github.io/icedodo/", likes: 0, isFavorite: false },
+    { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/", likes: 0, isFavorite: false }
+  ];
 
-    function addGame(gameData) {
-      const gameCard = document.createElement("div");
-      gameCard.classList.add("game-card");
-      gameCard.innerHTML = `
-        <img src="${gameData.image}" alt="${gameData.title}" onclick="openGame('${gameData.url}', '${gameData.title}')">
-        <h3>${gameData.title}</h3>
-      `;
-      document.getElementById("game-container").appendChild(gameCard);
+  function addGame(gameData) {
+    const gameCard = document.createElement("div");
+    gameCard.classList.add("game-card");
+    gameCard.innerHTML = `
+      <img src="${gameData.image}" alt="${gameData.title}" onclick="openGame('${gameData.url}', '${gameData.title}')">
+      <h3>${gameData.title}</h3>
+      <div>
+        <img src="${gameData.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameData.title}')">
+        <span class="like-count">${gameData.likes}</span>
+        <img src="${gameData.isFavorite ? 'bouton_favori.png' : 'bouton_favori_vide.png'}" class="favorite-button" onclick="toggleFavorite('${gameData.title}')">
+      </div>
+    `;
+    document.getElementById("game-container").appendChild(gameCard);
+  }
+
+  function toggleLike(gameTitle) {
+    const game = gameData.find(g => g.title === gameTitle);
+    if (game) {
+      game.likes = game.likes === 0 ? 1 : 0;
+      updateGameCard(game);
     }
+  }
 
-    function openGame(gameUrl, gameTitle) {
-      document.getElementById("game-iframe").src = gameUrl;
-      document.getElementById("game-iframe-container").style.display = "block";
+  function toggleFavorite(gameTitle) {
+    const game = gameData.find(g => g.title === gameTitle);
+    if (game) {
+      game.isFavorite = !game.isFavorite;
+      updateGameCard(game);
     }
+  }
 
-    function closeGame() {
-      document.getElementById("game-iframe-container").style.display = "none";
-      document.getElementById("game-iframe").src = "";
-    }
+  function updateGameCard(game) {
+    const gameCard = document.querySelector(`.game-card img[alt="${game.title}"]`).parentElement;
+    gameCard.innerHTML = `
+      <img src="${game.image}" alt="${game.title}" onclick="openGame('${game.url}', '${game.title}')">
+      <h3>${game.title}</h3>
+      <div>
+        <img src="${game.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${game.title}')">
+        <span class="like-count">${game.likes}</span>
+        <img src="${game.isFavorite ? 'bouton_favori.png' : 'bouton_favori_vide.png'}" class="favorite-button" onclick="toggleFavorite('${game.title}')">
+      </div>
+    `;
+  }
 
-    function searchGames() {
-      const searchInput = document.querySelector(".search-input").value.toLowerCase().trim();
-      const searchResults = document.getElementById("search-results");
-      searchResults.innerHTML = "";
+  function openGame(gameUrl, gameTitle) {
+    document.getElementById("game-iframe").src = gameUrl;
+    document.getElementById("game-iframe-container").style.display = "block";
+  }
 
-      gameData.forEach((game) => {
-        if (game.title.toLowerCase().includes(searchInput)) {
-          const gameResult = document.createElement("div");
-          gameResult.textContent = game.title;
-          gameResult.onclick = () => openGame(game.url, game.title);
-          searchResults.appendChild(gameResult);
-        }
-      });
+  function closeGame() {
+    document.getElementById("game-iframe-container").style.display = "none";
+    document.getElementById("game-iframe").src = "";
+  }
 
-      if (searchResults.children.length > 0) {
-        searchResults.style.display = "block";
-      } else {
-        searchResults.style.display = "none";
-      }
-    }
+  function searchGames() {
+    const searchInput = document.querySelector(".search-input").value.toLowerCase().trim();
+    const searchResults = document.getElementById("search-results");
+    searchResults.innerHTML = "";
 
-    function clearSearch() {
-      document.querySelector(".search-input").value = "";
-      document.getElementById("search-results").style.display = "none";
-    }
-
-    // Chargement des jeux
     gameData.forEach((game) => {
-      addGame(game);
+      if (game.title.toLowerCase().includes(searchInput)) {
+        const gameResult = document.createElement("div");
+        gameResult.textContent = game.title;
+        gameResult.onclick = () => openGame(game.url, game.title);
+        searchResults.appendChild(gameResult);
+      }
     });
-  </script>
+
+    if (searchResults.children.length > 0) {
+      searchResults.style.display = "block";
+    } else {
+      searchResults.style.display = "none";
+    }
+  }
+
+  function clearSearch() {
+    document.querySelector(".search-input").value = "";
+    document.getElementById("search-results").style.display = "none";
+  }
+
+  // Chargement des jeux
+  gameData.forEach((game) => {
+    addGame(game);
+  });
+</script>
 </body>
 </html>
