@@ -108,8 +108,8 @@
 
     .like-button,
     .favorite-button {
-      width: 5px;
-      height: 5px;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
       margin-right: 5px;
     }
@@ -188,6 +188,7 @@
       game.likes = game.likes === 0 ? 1 : 0;
       globalLikes[gameTitle] = game.likes;
       updateGameCard(game);
+      saveGameData();
     }
   }
 
@@ -196,6 +197,7 @@
     if (game) {
       game.isFavorite = !game.isFavorite;
       updateGameCard(game);
+      saveGameData();
     }
   }
 
@@ -248,7 +250,22 @@
     document.getElementById("search-results").style.display = "none";
   }
 
+  function saveGameData() {
+    localStorage.setItem("globalLikes", JSON.stringify(globalLikes));
+  }
+
+  function loadGameData() {
+    const storedLikes = localStorage.getItem("globalLikes");
+    if (storedLikes) {
+      globalLikes = JSON.parse(storedLikes);
+      gameData.forEach((game) => {
+        game.likes = globalLikes[game.title];
+      });
+    }
+  }
+
   // Chargement des jeux
+  loadGameData();
   gameData.forEach((game) => {
     addGame(game);
   });
