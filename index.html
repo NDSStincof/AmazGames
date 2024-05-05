@@ -108,8 +108,8 @@
 
     .like-button,
     .favorite-button {
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
       margin-right: 5px;
     }
@@ -143,16 +143,28 @@
 <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
 
 <script>
+  let globalLikes = {
+    "Slope": 0,
+    "Tunnel Rush": 0,
+    "OvO": 0,
+    "Run3": 0,
+    "Choppy Orc": 0,
+    "Factory Balls": 0,
+    "CircloO2": 0,
+    "IceDodo": 0,
+    "Tunnel Glider": 0
+  };
+
   const gameData = [
-    { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/", likes: 0, isFavorite: false },
-    { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/", likes: 0, isFavorite: false },
-    { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/", likes: 0, isFavorite: false },
-    { title: "Run3", image: "run3.png", url: "https://incrediblewebsite.github.io/run3/", likes: 0, isFavorite: false },
-    { title: "Choppy Orc", image: "choppyorc.png", url: "https://incrediblewebsite.github.io/choppyorc/", likes: 0, isFavorite: false },
-    { title: "Factory Balls", image: "factoryballs.png", url: "https://incrediblewebsite.github.io/factoryballs/", likes: 0, isFavorite: false },
-    { title: "CircloO2", image: "circloo2.png", url: "https://incrediblewebsite.github.io/circloo2/", likes: 0, isFavorite: false },
-    { title: "IceDodo", img: "icedodo.png", url: "https://incrediblewebsite.github.io/icedodo/", likes: 0, isFavorite: false },
-    { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/", likes: 0, isFavorite: false }
+    { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/", likes: globalLikes["Slope"], isFavorite: false },
+    { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/", likes: globalLikes["Tunnel Rush"], isFavorite: false },
+    { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/", likes: globalLikes["OvO"], isFavorite: false },
+    { title: "Run3", image: "run3.png", url: "https://incrediblewebsite.github.io/run3/", likes: globalLikes["Run3"], isFavorite: false },
+    { title: "Choppy Orc", image: "choppyorc.png", url: "https://incrediblewebsite.github.io/choppyorc/", likes: globalLikes["Choppy Orc"], isFavorite: false },
+    { title: "Factory Balls", image: "factoryballs.png", url: "https://incrediblewebsite.github.io/factoryballs/", likes: globalLikes["Factory Balls"], isFavorite: false },
+    { title: "CircloO2", image: "circloo2.png", url: "https://incrediblewebsite.github.io/circloo2/", likes: globalLikes["CircloO2"], isFavorite: false },
+    { title: "IceDodo", img: "icedodo.png", url: "https://incrediblewebsite.github.io/icedodo/", likes: globalLikes["IceDodo"], isFavorite: false },
+    { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/", likes: globalLikes["Tunnel Glider"], isFavorite: false }
   ];
 
   function addGame(gameData) {
@@ -174,20 +186,7 @@
     const game = gameData.find(g => g.title === gameTitle);
     if (game) {
       game.likes = game.likes === 0 ? 1 : 0;
-      updateGameCard(game);
-      updateGlobalLikes(gameTitle, game.likes);
-    }
-  }
-
-  function updateGlobalLikes(gameTitle, likes) {
-    const game = gameData.find(g => g.title === gameTitle);
-    if (game) {
-      game.likes = likes;
-      gameData.forEach(g => {
-        if (g.title === gameTitle) {
-          g.likes = likes;
-        }
-      });
+      globalLikes[gameTitle] = game.likes;
       updateGameCard(game);
     }
   }
