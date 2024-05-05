@@ -175,6 +175,20 @@
     if (game) {
       game.likes = game.likes === 0 ? 1 : 0;
       updateGameCard(game);
+      updateGlobalLikes(gameTitle, game.likes);
+    }
+  }
+
+  function updateGlobalLikes(gameTitle, likes) {
+    const game = gameData.find(g => g.title === gameTitle);
+    if (game) {
+      game.likes = likes;
+      gameData.forEach(g => {
+        if (g.title === gameTitle) {
+          g.likes = likes;
+        }
+      });
+      updateGameCard(game);
     }
   }
 
