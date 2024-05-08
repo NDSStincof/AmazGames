@@ -108,17 +108,21 @@
 
     .like-button,
     .favorite-button {
-  width: 10%; 
-  height: 10%; 
-  cursor: pointer;
-  margin-right: 5px;
-}
+      width: 10%;
+      height: 10%;
+      cursor: pointer;
+      margin-right: 5px;
+    }
     .like-count,
     .favorite-count {
       font-size: 10px;
       margin-right: 5px;
     }
   </style>
+
+  <!-- Ajoutez les scripts Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
 <body>
 
@@ -142,29 +146,34 @@
 <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
 
 <script>
-  let globalLikes = {
-    "Slope": 0,
-    "Tunnel Rush": 0,
-    "OvO": 0,
-    "Run3": 0,
-    "Choppy Orc": 0,
-    "Factory Balls": 0,
-    "CircloO2": 0,
-    "IceDodo": 0,
-    "Tunnel Glider": 0
+  // Configurez Firebase avec les paramètres de votre projet
+  const firebaseConfig = {
+    // Vos paramètres Firebase
   };
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
 
   const gameData = [
-    { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/", likes: globalLikes["Slope"], isFavorite: false },
-    { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/", likes: globalLikes["Tunnel Rush"], isFavorite: false },
-    { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/", likes: globalLikes["OvO"], isFavorite: false },
-    { title: "Run3", image: "run3.png", url: "https://incrediblewebsite.github.io/run3/", likes: globalLikes["Run3"], isFavorite: false },
-    { title: "Choppy Orc", image: "choppyorc.png", url: "https://incrediblewebsite.github.io/choppyorc/", likes: globalLikes["Choppy Orc"], isFavorite: false },
-    { title: "Factory Balls", image: "factoryballs.png", url: "https://incrediblewebsite.github.io/factoryballs/", likes: globalLikes["Factory Balls"], isFavorite: false },
-    { title: "CircloO2", image: "circloo2.png", url: "https://incrediblewebsite.github.io/circloo2/", likes: globalLikes["CircloO2"], isFavorite: false },
-    { title: "IceDodo", img: "icedodo.png", url: "https://incrediblewebsite.github.io/icedodo/", likes: globalLikes["IceDodo"], isFavorite: false },
-    { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/", likes: globalLikes["Tunnel Glider"], isFavorite: false }
+    { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/" },
+    { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/" },
+    { title: "OvO", image: "ovo.png", url: "https://incrediblewebsite.github.io/ovo/" },
+    { title: "Run3", image: "run3.png", url: "https://incrediblewebsite.github.io/run3/" },
+    { title: "Choppy Orc", image: "choppyorc.png", url: "https://incrediblewebsite.github.io/choppyorc/" },
+    { title: "Factory Balls", image: "factoryballs.png", url: "https://incrediblewebsite.github.io/factoryballs/" },
+    { title: "CircloO2", image: "circloo2.png", url: "https://incrediblewebsite.github.io/circloo2/" },
+    { title: "IceDodo", img: "icedodo.png", url: "https://incrediblewebsite.github.io/icedodo/" },
+    { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/" }
   ];
+
+  // Écoutez les modifications de la base de données
+  const likesRef = database.ref('likes');
+  likesRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    gameData.forEach((game) => {
+      game.likes = data[game.title] || 0;
+      updateGameCard(game);
+    });
+  });
 
   function addGame(gameData) {
     const gameCard = document.createElement("div");
@@ -175,7 +184,7 @@
       <div>
         <img src="${gameData.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameData.title}')">
         <span class="like-count">${gameData.likes}</span>
-        <img src="${gameData.isFavorite ? 'bouton_favori.png' : 'bouton_favori_vide.png'}" class="favorite-button" onclick="toggleFavorite('${gameData.title}')">
+        <img src="bouton_favori_vide.png" class="favorite-button">
       </div>
     `;
     document.getElementById("game-container").appendChild(gameCard);
@@ -184,19 +193,10 @@
   function toggleLike(gameTitle) {
     const game = gameData.find(g => g.title === gameTitle);
     if (game) {
-      game.likes = game.likes === 0 ? 1 : 0;
-      globalLikes[gameTitle] = game.likes;
+      const newLikeCount = game.likes === 0 ? 1 : 0;
+      game.likes = newLikeCount;
       updateGameCard(game);
-      saveGameData();
-    }
-  }
-
-  function toggleFavorite(gameTitle) {
-    const game = gameData.find(g => g.title === gameTitle);
-    if (game) {
-      game.isFavorite = !game.isFavorite;
-      updateGameCard(game);
-      saveGameData();
+      likesRef.child(gameTitle).set(newLikeCount);
     }
   }
 
@@ -208,7 +208,7 @@
       <div>
         <img src="${game.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${game.title}')">
         <span class="like-count">${game.likes}</span>
-        <img src="${game.isFavorite ? 'bouton_favori.png' : 'bouton_favori_vide.png'}" class="favorite-button" onclick="toggleFavorite('${game.title}')">
+        <img src="bouton_favori_vide.png" class="favorite-button">
       </div>
     `;
   }
@@ -249,22 +249,7 @@
     document.getElementById("search-results").style.display = "none";
   }
 
-  function saveGameData() {
-    localStorage.setItem("globalLikes", JSON.stringify(globalLikes));
-  }
-
-  function loadGameData() {
-    const storedLikes = localStorage.getItem("globalLikes");
-    if (storedLikes) {
-      globalLikes = JSON.parse(storedLikes);
-      gameData.forEach((game) => {
-        game.likes = globalLikes[game.title];
-      });
-    }
-  }
-
   // Chargement des jeux
-  loadGameData();
   gameData.forEach((game) => {
     addGame(game);
   });
