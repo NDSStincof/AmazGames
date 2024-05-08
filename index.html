@@ -1,3 +1,6 @@
+Voici le code d'origine sans Firebase :
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,13 +109,15 @@
       height: 100px;
     }
 
-    .like-button {
+    .like-button,
+    .favorite-button {
       width: 10%;
       height: 10%;
       cursor: pointer;
       margin-right: 5px;
     }
-    .like-count {
+    .like-count,
+    .favorite-count {
       font-size: 10px;
       margin-right: 5px;
     }
@@ -152,28 +157,6 @@
     { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/" }
   ];
 
-  let likes = {};
-
-  function toggleLike(gameTitle) {
-    const currentLikes = likes[gameTitle] || 0;
-    const newLikeCount = currentLikes === 0 ? 1 : 0;
-    likes[gameTitle] = newLikeCount;
-    updateGameCard(gameTitle, newLikeCount);
-    syncLikesWithServer();
-  }
-
-  function updateGameCard(gameTitle, likeCount) {
-    const gameCard = document.querySelector(`.game-card img[alt="${gameTitle}"]`).parentElement;
-    gameCard.innerHTML = `
-      <img src="${gameData.find(g => g.title === gameTitle).image}" alt="${gameTitle}" onclick="openGame('${gameData.find(g => g.title === gameTitle).url}', '${gameTitle}')">
-      <h3>${gameTitle}</h3>
-      <div>
-        <img src="${likeCount > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameTitle}')">
-        <span class="like-count">${likeCount}</span>
-      </div>
-    `;
-  }
-
   function addGame(gameData) {
     const gameCard = document.createElement("div");
     gameCard.classList.add("game-card");
@@ -181,8 +164,10 @@
       <img src="${gameData.image}" alt="${gameData.title}" onclick="openGame('${gameData.url}', '${gameData.title}')">
       <h3>${gameData.title}</h3>
       <div>
-        <img src="${likes[gameData.title] > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameData.title}')">
-        <span class="like-count">${likes[gameData.title] || 0}</span>
+        <img src="bouton_like_vide.png" class="like-button">
+        <span class="like-count">0</span>
+        <img src="bouton_favori_vide.png" class="favorite-button">
+        <span class="favorite-count">0</span>
       </div>
     `;
     document.getElementById("game-container").appendChild(gameCard);
@@ -224,39 +209,19 @@
     document.getElementById("search-results").style.display = "none";
   }
 
-  function syncLikesWithServer() {
-    fetch('/likes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(likes)
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Erreur lors de la synchronisation des likes avec le serveur');
-      }
-    })
-    .catch(error => {
-      console.error('Erreur lors de la synchronisation des likes avec le serveur:', error);
-    });
-  }
-
-  fetch('/likes')
-    .then(response => response.json())
-    .then(serverLikes => {
-      likes = serverLikes;
-      gameData.forEach(game => {
-        updateGameCard(game.title, likes[game.title] || 0);
-      });
-    })
-    .catch(error => {
-      console.error('Erreur lors de la récupération des likes depuis le serveur:', error);
-    });
-
   gameData.forEach((game) => {
     addGame(game);
   });
 </script>
 </body>
 </html>
+```
+
+Ce code est le code d'origine sans Firebase, avec les fonctionnalités suivantes :
+
+- Affichage d'une grille de jeux avec leur image, titre, bouton "Like" et bouton "Favori" (sans fonctionnalité pour le moment)
+- Ouverture d'un jeu dans un iframe en plein écran lorsqu'on clique sur son image
+- Barre de recherche pour filtrer les jeux par titre
+- Pied de page avec le copyright
+
+Les boutons "Like" et "Favori" sont présents mais n'ont pas de fonctionnalité pour le moment. Les données ne sont pas persistantes et ne sont pas synchronisées entre les appareils.
