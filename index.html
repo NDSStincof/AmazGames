@@ -106,23 +106,17 @@
       height: 100px;
     }
 
-    .like-button,
-    .favorite-button {
+    .like-button {
       width: 10%;
       height: 10%;
       cursor: pointer;
       margin-right: 5px;
     }
-    .like-count,
-    .favorite-count {
+    .like-count {
       font-size: 10px;
       margin-right: 5px;
     }
   </style>
-
-  <!-- Ajoutez les scripts Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 </head>
 <body>
 
@@ -146,13 +140,6 @@
 <footer>Copyright © 2024 - All Rights Reserved<br>Site par Stincof NDS & Fern</footer>
 
 <script>
-  // Configurez Firebase avec les paramètres de votre projet
-  const firebaseConfig = {
-    // Vos paramètres Firebase
-  };
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
   const gameData = [
     { title: "Slope", image: "slope.png", url: "https://incrediblewebsite.github.io/slope/" },
     { title: "Tunnel Rush", image: "tunnelrush.png", url: "https://incrediblewebsite.github.io/tunnelrush/" },
@@ -165,15 +152,31 @@
     { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/" }
   ];
 
-  // Écoutez les modifications de la base de données
-  const likesRef = database.ref('likes');
-  likesRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    gameData.forEach((game) => {
-      game.likes = data[game.title] || 0;
-      updateGameCard(game);
-    });
-  });
+  // Récupérer les likes depuis le localStorage ou initialiser un objet vide
+  const likes = JSON.parse(localStorage.getItem('likes')) || {};
+
+  // Fonction pour mettre à jour les likes
+  function toggleLike(gameTitle) {
+    const currentLikes = likes[gameTitle] || 0;
+    const newLikeCount = currentLikes === 0 ? 1 : 0;
+    likes[gameTitle] = newLikeCount;
+    localStorage.setItem('likes', JSON.stringify(likes));
+    updateGameCard(gameTitle, newLikeCount);
+    syncLikesWithServer();
+  }
+
+  // Fonction pour mettre à jour le nombre de likes affiché
+  function updateGameCard(gameTitle, likeCount) {
+    const gameCard = document.querySelector(`.game-card img[alt="${gameTitle}"]`).parentElement;
+    gameCard.innerHTML = `
+      <img src="${gameData.find(g => g.title === gameTitle).image}" alt="${gameTitle}" onclick="openGame('${gameData.find(g => g.title === gameTitle).url}', '${gameTitle}')">
+      <h3>${gameTitle}</h3>
+      <div>
+        <img src="${likeCount > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameTitle}')">
+        <span class="like-count">${likeCount}</span>
+      </div>
+    `;
+  }
 
   function addGame(gameData) {
     const gameCard = document.createElement("div");
@@ -182,35 +185,11 @@
       <img src="${gameData.image}" alt="${gameData.title}" onclick="openGame('${gameData.url}', '${gameData.title}')">
       <h3>${gameData.title}</h3>
       <div>
-        <img src="${gameData.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameData.title}')">
-        <span class="like-count">${gameData.likes}</span>
-        <img src="bouton_favori_vide.png" class="favorite-button">
+        <img src="${likes[gameData.title] > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${gameData.title}')">
+        <span class="like-count">${likes[gameData.title] || 0}</span>
       </div>
     `;
     document.getElementById("game-container").appendChild(gameCard);
-  }
-
-  function toggleLike(gameTitle) {
-    const game = gameData.find(g => g.title === gameTitle);
-    if (game) {
-      const newLikeCount = game.likes === 0 ? 1 : 0;
-      game.likes = newLikeCount;
-      updateGameCard(game);
-      likesRef.child(gameTitle).set(newLikeCount);
-    }
-  }
-
-  function updateGameCard(game) {
-    const gameCard = document.querySelector(`.game-card img[alt="${game.title}"]`).parentElement;
-    gameCard.innerHTML = `
-      <img src="${game.image}" alt="${game.title}" onclick="openGame('${game.url}', '${game.title}')">
-      <h3>${game.title}</h3>
-      <div>
-        <img src="${game.likes > 0 ? 'bouton_liké.png' : 'bouton_like_vide.png'}" class="like-button" onclick="toggleLike('${game.title}')">
-        <span class="like-count">${game.likes}</span>
-        <img src="bouton_favori_vide.png" class="favorite-button">
-      </div>
-    `;
   }
 
   function openGame(gameUrl, gameTitle) {
@@ -248,6 +227,39 @@
     document.querySelector(".search-input").value = "";
     document.getElementById("search-results").style.display = "none";
   }
+
+  // Synchroniser les likes avec le serveur
+  function syncLikesWithServer() {
+    fetch('/likes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(likes)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erreur lors de la synchronisation des likes avec le serveur');
+      }
+    })
+    .catch(error => {
+      console.error('Erreur lors de la synchronisation des likes avec le serveur:', error);
+    });
+  }
+
+  // Récupérer les dernières données de likes depuis le serveur
+  fetch('/likes')
+    .then(response => response.json())
+    .then(serverLikes => {
+      Object.assign(likes, serverLikes);
+      localStorage.setItem('likes', JSON.stringify(likes));
+      gameData.forEach(game => {
+        updateGameCard(game.title, likes[game.title] || 0);
+      });
+    })
+    .catch(error => {
+      console.error('Erreur lors de la récupération des likes depuis le serveur:', error);
+    });
 
   // Chargement des jeux
   gameData.forEach((game) => {
