@@ -152,20 +152,16 @@
     { title: "Tunnel Glider", img: "tunnelglider.png", url: "https://incrediblewebsite.github.io/tunnelglider/" }
   ];
 
-  // Récupérer les likes depuis le localStorage ou initialiser un objet vide
-  const likes = JSON.parse(localStorage.getItem('likes')) || {};
+  let likes = {};
 
-  // Fonction pour mettre à jour les likes
   function toggleLike(gameTitle) {
     const currentLikes = likes[gameTitle] || 0;
     const newLikeCount = currentLikes === 0 ? 1 : 0;
     likes[gameTitle] = newLikeCount;
-    localStorage.setItem('likes', JSON.stringify(likes));
     updateGameCard(gameTitle, newLikeCount);
     syncLikesWithServer();
   }
 
-  // Fonction pour mettre à jour le nombre de likes affiché
   function updateGameCard(gameTitle, likeCount) {
     const gameCard = document.querySelector(`.game-card img[alt="${gameTitle}"]`).parentElement;
     gameCard.innerHTML = `
@@ -228,7 +224,6 @@
     document.getElementById("search-results").style.display = "none";
   }
 
-  // Synchroniser les likes avec le serveur
   function syncLikesWithServer() {
     fetch('/likes', {
       method: 'POST',
@@ -247,12 +242,10 @@
     });
   }
 
-  // Récupérer les dernières données de likes depuis le serveur
   fetch('/likes')
     .then(response => response.json())
     .then(serverLikes => {
-      Object.assign(likes, serverLikes);
-      localStorage.setItem('likes', JSON.stringify(likes));
+      likes = serverLikes;
       gameData.forEach(game => {
         updateGameCard(game.title, likes[game.title] || 0);
       });
@@ -261,7 +254,6 @@
       console.error('Erreur lors de la récupération des likes depuis le serveur:', error);
     });
 
-  // Chargement des jeux
   gameData.forEach((game) => {
     addGame(game);
   });
